@@ -1,7 +1,6 @@
 <?php
-
 include "connect.php";
-header("Content-Type: application/json");
+header("Access-Control-Allow-Origin: *");
 
     
 $username=$_POST['username'];
@@ -9,22 +8,43 @@ $password=$_POST['password'];
 
 
 $sql = "SELECT * FROM user_ WHERE username='$username' AND password='$password'";
-	$result = pg_query($sql);
-	$hasil_login = array(
-	'features' => array(
-            'id_user' => $result['id_user'],
-            'email' => $result['email'],
-            'wallet' => $result['wallet'],
-            'phone' => $result['phone']
-            
-    )
-    );
+$result = pg_query($sql);
+if(pg_num_rows($result)<1)
+{
+    $hasil_login = array(
+        'status'=> 'Login gagal',
+        'error' => 'true'
+        );
+}
+else
+{
+    $hasil_login = array(
+        'status'=> 'Login Sukses',
+        'error' => 'false',
+        'user'=>array()
+        );
+        while ($isinya = pg_fetch_assoc($result)) {
+            $user = array(
+            'type' => 'Feature',
+            'properties' => array(
+            'id_user' => $isinya['id_user'],
+            'username' => $isinya['username'],
+            'email' => $isinya['email'],
+            'created_at' => $isinya['created_at'],
+            'wallet' => $isinya['wallet'],
+            'phone' => $isinya['phone']
+        
+            )
+        );
+        array_push($hasil_login['user'], $user);
+        }
+}
     
+        
+      
+        
+        
 
-	
-	array_push($hasil_login['features'], $features);
-	
-	echo $data= json_encode($hasil_login);
-
+echo $data= json_encode($hasil_login);
 
 ?>
