@@ -27,16 +27,13 @@ else
         );
         while ($isinya = pg_fetch_assoc($result)) {
             $user = array(
-            'type' => 'Feature',
-            'properties' => array(
+            
             'id_user' => $isinya['id_user'],
             'username' => $isinya['username'],
             'email' => $isinya['email'],
             'created_at' => $isinya['created_at'],
             'wallet' => $isinya['wallet'],
-            'phone' => $isinya['phone']
-        
-            )
+            'phone' => $isinya['phone'] 
         );
         array_push($hasil_login['user'], $user);
         }
